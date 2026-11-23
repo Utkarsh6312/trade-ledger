@@ -1,5 +1,31 @@
 import { expect, test } from '@playwright/test';
 
+test('dark mode styles the calculator and persists across reloads', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  await page.goto('/');
+  const toggle = page.getByRole('button', { name: 'Dark mode' });
+  const root = page.locator('html');
+  const exchange = page.getByLabel('Exchange');
+
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await toggle.focus();
+  await page.keyboard.press('Space');
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  await expect(root).toHaveCSS('color-scheme', 'dark');
+  await expect(exchange).toHaveCSS('background-color', 'rgb(35, 38, 31)');
+  await page.getByLabel('Current market price in rupees').fill('250');
+  await expect(page.locator('#profit-label')).toHaveText('Net loss');
+  await expect(page.locator('#profit-card')).toHaveCSS('background-color', 'rgb(90, 50, 43)');
+  expect(await root.evaluate(node => node.scrollWidth)).toBeLessThanOrEqual(320);
+
+  await page.reload();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  await toggle.click();
+  await page.reload();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await expect(root).toHaveCSS('color-scheme', 'light');
+});
+
 test('mobile calculator changes broker and mode, shows losses, and expands fees', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto('/');
@@ -22,25 +48,30 @@ test('mobile calculator changes broker and mode, shows losses, and expands fees'
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
 });
 
-test('production assets and calculator work under a Pages repository subpath', async ({ page, baseURL }) => {
-  const prefix = '/trade-ledger/';
-  const errors: string[] = [];
-  page.on('pageerror', error => errors.push(error.message));
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await page.route('**/*', async route => {
-    const request = new URL(route.request().url());
-    if (request.origin !== baseURL || !request.pathname.startsWith(prefix)) return route.abort();
-    request.pathname = '/' + request.pathname.slice(prefix.length);
-    await route.fulfill({ response: await route.fetch({ url: request.href }) });
-  });
-  await page.goto(prefix);
-  await expect(page.locator('#profit')).toHaveText('—');
-  await expect(page.locator('#profit-card')).toHaveCSS('background-color', 'rgb(163, 223, 255)');
-  await expect(page.locator('#quote-status')).toHaveText('Manual quote');
-  await page.getByLabel('Current market price in rupees').fill('240');
-  await expect(page.locator('#profit-card')).toHaveCSS('background-color', 'rgb(255, 156, 133)');
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1280);
-  expect(errors).toEqual([]);
+test('production assets and calculator work under a Pages repository subpath', async ({ browser, baseURL }) => {
+  // The route mocks asset URLs only. Service worker registration bypasses this interception.
+  const page = await browser.newPage({ baseURL, serviceWorkers: 'block', viewport: { width: 1280, height: 900 } });
+  try {
+    const prefix = '/trade-ledger/';
+    const errors: string[] = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await page.route('**/*', async route => {
+      const request = new URL(route.request().url());
+      if (request.origin !== baseURL || !request.pathname.startsWith(prefix)) return route.abort();
+      request.pathname = '/' + request.pathname.slice(prefix.length);
+      await route.fulfill({ response: await route.fetch({ url: request.href }) });
+    });
+    await page.goto(prefix);
+    await expect(page.locator('#profit')).toHaveText('—');
+    await expect(page.locator('#profit-card')).toHaveCSS('background-color', 'rgb(163, 223, 255)');
+    await expect(page.locator('#quote-status')).toHaveText('Manual quote');
+    await page.getByLabel('Current market price in rupees').fill('240');
+    await expect(page.locator('#profit-card')).toHaveCSS('background-color', 'rgb(255, 156, 133)');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1280);
+    expect(errors).toEqual([]);
+  } finally {
+    await page.close();
+  }
 });
 
 test('one market price instantly calculates buy cost and same-price net sell value', async ({ page }) => {

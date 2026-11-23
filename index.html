@@ -4,6 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f9f8f0">
+  <script>
+    try {
+      if (localStorage.getItem('trade-ledger-theme') === 'dark') {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    } catch {
+      // Storage may be blocked by browser privacy settings.
+    }
+  </script>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="manifest" href="./manifest.webmanifest">
@@ -16,6 +25,7 @@
     <header class="masthead">
       <a class="brand" href="./" aria-label="Trade Ledger home"><span class="brand-icon" aria-hidden="true">₹</span> TRADE LEDGER</a>
       <div class="masthead-actions">
+        <button type="button" id="theme-toggle" class="theme-toggle" aria-pressed="false">Dark mode</button>
         <button type="button" id="install-app" class="install-app" hidden>Install app</button>
         <span class="market-label">INDIA <span aria-hidden="true">/</span> CASH EQUITY</span>
       </div>

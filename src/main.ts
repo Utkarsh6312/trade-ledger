@@ -147,6 +147,27 @@ form.addEventListener('input', event => {
 renderQuote();
 renderTrade();
 
+const themeToggle = element<HTMLButtonElement>('theme-toggle');
+const root = document.documentElement;
+const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!;
+
+function applyTheme(theme: 'light' | 'dark') {
+  root.dataset.theme = theme;
+  themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+  themeColor.content = getComputedStyle(root).getPropertyValue('--paper');
+}
+
+applyTheme(root.dataset.theme === 'dark' ? 'dark' : 'light');
+themeToggle.addEventListener('click', () => {
+  const theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(theme);
+  try {
+    localStorage.setItem('trade-ledger-theme', theme);
+  } catch {
+    // The toggle still works for the current page when storage is unavailable.
+  }
+});
+
 let installPrompt: BeforeInstallPromptEvent | undefined;
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 if (isMobile && !window.matchMedia('(display-mode: standalone)').matches) installButton.hidden = false;

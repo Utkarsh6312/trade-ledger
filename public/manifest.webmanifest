@@ -1,0 +1,12 @@
+{
+  "name": "Trade Ledger",
+  "short_name": "Trade Ledger",
+  "description": "Stock trading charges calculator for Indian cash equity.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f9f8f0",
+  "theme_color": "#f9f8f0",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

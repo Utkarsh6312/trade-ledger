@@ -1,0 +1,9 @@
+{
+  "name": "stock-trading-charges",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "vite", "preview": "vite preview", "build": "tsc --noEmit && vite build", "test": "vitest run", "test:e2e": "playwright test" },
+  "dependencies": { "decimal.js": "^10.4.3" },
+  "devDependencies": { "@playwright/test": "^1.51.1", "typescript": "^5.7.3", "vite": "^6.2.0", "vitest": "4.1.12" }
+}

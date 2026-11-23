@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f9f8f0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <meta name="description" content="Compare stock trading charges and break-even prices across Groww, Zerodha, Angel One, Upstox, Paytm Money, and Dhan.">
+  <title>Trade Ledger — Stock Trading Charges Calculator</title>
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <a class="brand" href="./" aria-label="Trade Ledger home"><span class="brand-icon" aria-hidden="true">₹</span> TRADE LEDGER</a>
+      <div class="masthead-actions">
+        <button type="button" id="install-app" class="install-app" hidden>Install app</button>
+        <span class="market-label">INDIA <span aria-hidden="true">/</span> CASH EQUITY</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="title">
+        <div>
+          <h1 id="title">Stock Trading<br><mark>Charges Calculator</mark></h1>
+          <p>See what a trade costs and what you keep after fees.</p>
+        </div>
+        <div class="intro-stamp" aria-hidden="true">
+          <svg viewBox="0 0 110 100" fill="none"><path d="M14 76h82M23 69v-9h13v9m9 0V44h13v25m9 0V30h13v39" fill="#d0fa57" stroke="currentColor" stroke-width="4"/><path d="m22 47 22-14 14 4 25-20m-15 0h15v15" stroke="currentColor" stroke-width="4" stroke-linecap="square"/><path d="M91 52v12m-6-6h12M18 16v12m-6-6h12" stroke="currentColor" stroke-width="3"/></svg>
+        </div>
+      </section>
+
+      <div class="board">
+        <section class="card setup" aria-labelledby="setup-heading">
+          <header class="card-header yellow"><h2 id="setup-heading">Trade setup</h2><span aria-hidden="true">✦</span></header>
+          <form id="trade-form">
+            <fieldset><legend>Broker</legend><div class="segments brokers">
+              <label><input type="radio" name="broker" value="Groww" checked><span>Groww</span></label>
+              <label><input type="radio" name="broker" value="Zerodha"><span>Zerodha</span></label>
+              <label><input type="radio" name="broker" value="Angel One"><span>Angel One</span></label>
+              <label><input type="radio" name="broker" value="Upstox"><span>Upstox</span></label>
+              <label><input type="radio" name="broker" value="Paytm Money"><span>Paytm Money</span></label>
+              <label><input type="radio" name="broker" value="Dhan"><span>Dhan</span></label>
+            </div></fieldset>
+            <fieldset><legend>Trading mode</legend><div class="segments modes">
+              <label><input type="radio" name="mode" value="DELIVERY" checked><span>Delivery</span></label>
+              <label><input type="radio" name="mode" value="INTRADAY"><span>Intraday</span></label>
+            </div></fieldset>
+            <div class="fields">
+              <label>Exchange<select name="exchange" id="exchange"><option>NSE</option><option>BSE</option></select></label>
+            </div>
+            <section class="quote-card" aria-labelledby="quote-heading">
+              <div class="quote-head"><h3 id="quote-heading">Market price</h3><span id="quote-status" class="badge">Manual quote</span></div>
+              <label class="money-field"><span class="sr-only">Current market price in rupees</span><span aria-hidden="true">₹</span><input id="market-price" inputmode="decimal" placeholder="Enter price per share" autocomplete="off"></label>
+              <p id="quote-time" role="status">Last updated: —</p>
+            </section>
+            <div class="fields trade-fields">
+              <label>Quantity<input id="quantity" inputmode="numeric" value="1" autocomplete="off"></label>
+              <label>Price tick (₹)<select id="tick"><option value="0.01">0.01</option><option value="0.05">0.05</option><option value="0.10">0.10</option><option value="0.50">0.50</option><option value="1">1.00</option><option value="5">5.00</option></select></label>
+            </div>
+            <p class="hint" id="input-status">The same market price is used for buying and selling.</p>
+          </form>
+        </section>
+
+        <section class="results" aria-labelledby="results-heading">
+          <div class="result-heading"><h2 id="results-heading">Trade outcome</h2><span class="badge result-tag" id="result-context">GROWW / DELIVERY</span></div>
+          <div class="profit-card" id="profit-card" data-state="profit">
+            <div><p id="profit-label">Net profit</p><strong id="profit">—</strong><span id="return" class="return-badge">—</span></div>
+            <svg class="profit-icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 48h45M12 39l13-13 10 8 16-18m-13 0h13v13" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square"/></svg>
+          </div>
+          <div class="metrics">
+            <article class="metric"><h3>Total buy cost</h3><strong id="buy-total">—</strong><p id="buy-note">Includes buy charges</p></article>
+            <article class="metric"><h3>Net sell at same price</h3><strong id="sell-total">—</strong><p id="sell-note">After sell charges</p><p id="sell-fee-note"></p></article>
+            <article class="metric blue"><h3>Break-even price</h3><strong id="break-even">—</strong><p>Per share at the selected tick</p></article>
+            <article class="metric coral"><h3>Total charges</h3><strong id="total-charges">—</strong><p>Buy and sell combined</p></article>
+          </div>
+          <details class="card breakdown" open>
+            <summary><span>Detailed charges</span><span class="disclosure" aria-hidden="true"></span></summary>
+            <div class="table-wrap">
+              <table><caption class="sr-only">Estimated charges on the buy and sell sides</caption>
+                <thead><tr><th scope="col">Charge</th><th scope="col">Buy</th><th scope="col">Sell</th></tr></thead>
+                <tbody id="charge-lines"></tbody>
+                <tfoot><tr><th scope="row">Total</th><td id="buy-fees">—</td><td id="sell-fees">—</td></tr></tfoot>
+              </table>
+            </div>
+            <p id="charge-notice" class="hint"></p>
+          </details>
+          <p class="rate-note">Rates checked <time id="rates-verified"></time> · <a id="active-pricing" href="https://groww.in/pricing">Groww pricing</a></p>
+          <p class="hint" id="plan-note"></p>
+          <p id="result-announcement" role="status" class="sr-only"></p>
+        </section>
+      </div>
+      <section class="card comparison" id="broker-comparison" aria-labelledby="compare-heading" hidden>
+        <header class="card-header blue"><h2 id="compare-heading">Compare brokers</h2></header>
+        <table>
+          <caption class="sr-only">Estimates for the same price, quantity, exchange, and trading mode</caption>
+          <thead><tr><th scope="col">Broker</th><th scope="col">Buy cost</th><th scope="col">Net sell</th><th scope="col">Total fees</th></tr></thead>
+          <tbody id="comparison-lines"></tbody>
+        </table>
+      </section>
+    </main>
+    <footer>
+      <p>Estimates for one buy and one sell order. Final charges may differ on your contract note.</p>
+      <nav aria-label="Official charge references"><a href="https://groww.in/pricing">Groww</a><a href="https://zerodha.com/charges/">Zerodha</a><a href="https://www.angelone.in/exchange-transaction-charges">Angel One</a><a href="https://upstox.com/brokerage-charges/">Upstox</a><a href="https://www.paytmmoney.com/stocks/pricing">Paytm Money</a><a href="https://dhan.co/pricing/">Dhan</a></nav>
+    </footer>
+    <p id="install-message" class="install-message" role="status"></p>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -31,6 +31,8 @@ Commit source code, assets in `public/`, tests, project configuration, and `pack
 
 Push the project to a GitHub repository with a `main` branch. In the repository, open **Settings → Pages** and select **GitHub Actions** as the source. The included workflow runs the unit tests, builds `dist/`, and publishes that output on pushes to `main`. Relative asset paths support repository subpaths.
 
+If the published page loads without styles, check the Pages source. Publishing from the repository branch serves Vite’s source HTML, which references the TypeScript entry point directly. After switching the source to **GitHub Actions**, open **Actions → Deploy Trade Ledger → Run workflow** on `main`. The workflow creates `dist/` from a clean checkout, so you can delete the local build folder at any time and regenerate it with `npm run build`.
+
 ## Market quotes
 
 Enter one market price to compare the total cost of buying with the net amount from selling at that same price. The quote is applied instantly to both sides. The manual timestamp records when you entered it.

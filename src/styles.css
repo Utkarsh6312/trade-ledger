@@ -1,18 +1,24 @@
 :root{font-family:"Segoe UI Variable","Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--paper);font-synthesis:none;color-scheme:light;--ink:#151611;--paper:#f9f8f0;--surface:#fffefa;--yellow:#ffdf38;--lime:#d0fa57;--blue:#a3dfff;--coral:#ff9c85;--quote-bg:#e7f5ff;--table-bg:#eff4e4;--muted:#42453b;--line:var(--ink);--focus:#165cca;--border:2px solid var(--line);--shadow:5px 5px var(--line)}
 :root[data-theme=dark]{
   color-scheme:dark;
-  --ink:#f3f2e8;
-  --paper:#171914;
-  --surface:#23261f;
-  --yellow:#574918;
-  --lime:#34471e;
-  --blue:#203e52;
-  --coral:#5a322b;
-  --quote-bg:#252f35;
-  --table-bg:#2d3427;
-  --muted:#bebfb1;
-  --line:#858a76;
-  --focus:#8ccaff;
+  --ink:#edf2fa;
+  --paper:#10141d;
+  --surface:#181f2b;
+  --yellow:#222d3d;
+  --lime:#153630;
+  --blue:#1e304c;
+  --coral:#38242f;
+  --quote-bg:#141b26;
+  --table-bg:#202a3a;
+  --muted:#a8b5c9;
+  --line:#364357;
+  --control-line:#62728a;
+  --focus:#8db8ff;
+  --accent:#a9c7ff;
+  --gain:#81e0bf;
+  --loss:#ffc0cc;
+  --edge-shadow:#090d14;
+  --shadow:5px 5px var(--edge-shadow);
 }
 *{box-sizing:border-box}
 body{margin:0;font-size:1rem;line-height:1.45}
@@ -62,7 +68,7 @@ legend{margin-bottom:5px}
 .fields label{display:grid;gap:5px;min-width:0}
 input:not([type=radio]),select{width:100%;min-width:0;background:var(--surface);border:var(--border);border-radius:0;min-height:43px;padding:7px 9px;font-weight:650}
 select{appearance:none;padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23151611' stroke-width='2'/%3E%3C/svg%3E");background-position:right 9px center;background-repeat:no-repeat}
-:root[data-theme=dark] select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23f3f2e8' stroke-width='2'/%3E%3C/svg%3E")}
+:root[data-theme=dark] select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23a9c7ff' stroke-width='2'/%3E%3C/svg%3E")}
 .quote-card{background:var(--quote-bg);border:var(--border);padding:10px;display:grid;gap:8px}
 .quote-head h3{font-size:.95rem;font-weight:900}
 .badge{border:var(--border);background:var(--surface);padding:3px 6px;font-size:.71rem;line-height:1.2}
@@ -107,6 +113,27 @@ footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin
 .comparison tr[data-selected=true]{background:var(--lime)}
 .comparison tbody tr:last-child>*{border-bottom:0}
 footer nav{display:flex;flex-wrap:wrap;gap:12px;font-weight:800}
+
+:root[data-theme=dark] {
+  mark{color:var(--accent);background:none;padding-inline:0}
+  .brand-icon,.intro-stamp{color:var(--accent);background:var(--blue);box-shadow:var(--shadow)}
+  .intro-stamp path:first-child{fill:#42649d}
+  .intro p,.metric p,.rate-note,footer>p{color:var(--muted)}
+  .rate-note a,footer nav a{color:var(--accent)}
+  button,.segments span,.money-field,.fields :is(input,select){border-color:var(--control-line)}
+  button,.segments span,.metric{box-shadow:2px 2px var(--edge-shadow)}
+  .install-app,.theme-toggle[aria-pressed=true],.segments input:checked+span{
+    color:var(--accent);background:var(--blue);border-color:var(--focus);
+  }
+  .segments input:checked+span{box-shadow:inset 0 -2px var(--focus)}
+  .comparison tr[data-selected=true]{background:var(--blue)}
+  .profit-card[data-state=profit]{color:var(--gain);border-color:#387967}
+  .profit-card[data-state=loss]{color:var(--loss);border-color:#a35f70}
+  .profit-card:is([data-state=even],[data-state=empty]){color:var(--accent)}
+  .metric.blue strong{color:var(--accent)}
+  .metric.coral{background:var(--surface)}
+}
+
 @media(max-width:500px){.masthead{min-height:64px;padding-block:8px}.masthead-actions{flex-wrap:wrap;justify-content:flex-end}.market-label{display:none}.install-app,.theme-toggle{font-size:.75rem}}
 @media(max-width:390px){.comparison th,.comparison td{padding:6px 5px;font-size:.79rem}}
 @media(hover:hover){button:not(:disabled):hover,.segments label:hover span{transform:translate(-1px,-1px);box-shadow:3px 3px var(--line)}}

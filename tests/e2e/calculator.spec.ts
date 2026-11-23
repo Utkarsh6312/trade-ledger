@@ -12,10 +12,10 @@ test('dark mode styles the calculator and persists across reloads', async ({ pag
   await page.keyboard.press('Space');
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
   await expect(root).toHaveCSS('color-scheme', 'dark');
-  await expect(exchange).toHaveCSS('background-color', 'rgb(35, 38, 31)');
+  await expect(exchange).toHaveCSS('background-color', 'rgb(24, 31, 43)');
   await page.getByLabel('Current market price in rupees').fill('250');
   await expect(page.locator('#profit-label')).toHaveText('Net loss');
-  await expect(page.locator('#profit-card')).toHaveCSS('background-color', 'rgb(90, 50, 43)');
+  await expect(page.locator('#profit-card')).toHaveCSS('background-color', 'rgb(56, 36, 47)');
   expect(await root.evaluate(node => node.scrollWidth)).toBeLessThanOrEqual(320);
 
   await page.reload();
